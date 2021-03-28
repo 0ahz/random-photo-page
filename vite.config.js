@@ -4,7 +4,11 @@ import html from 'vite-plugin-html';
 
 export default ({ mode }) => {
   const env = loadEnv(mode, process.cwd());
-  
+
+  Object.keys(env).forEach((key) => {
+    env[key] = decodeURIComponent(env[key] || '');
+  });
+
   return defineConfig({
     plugins: [
       svelte(),
