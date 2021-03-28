@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0,user-scalable=no, viewport-fit=cover"
+    />
+    <title><%- VITE_APP_TITLE %></title>
+    <style>
+      .hide-block {
+        opacity: 0;
+        visibility: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module" src="/src/main.ts"></script>
+
+    <% if (VITE_GOOGLE_ANALYTICS_ID) { %>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=<%- VITE_GOOGLE_ANALYTICS_ID %>"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+
+      gtag('config', '<%- VITE_GOOGLE_ANALYTICS_ID %>');
+    </script>
+    <% } %> <% if (VITE_BEIAN_NO && VITE_BEIAN_SITE) { %>
+    <a class="hide-block" href="<%- VITE_BEIAN_SITE %>"><%- VITE_BEIAN_NO %></a>
+    <% } %>
+  </body>
+</html>
