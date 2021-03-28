@@ -1,10 +1,13 @@
 <script lang="ts">
   import { queryRandomPhoto, queryPhotoInfo } from './api/picsum';
 
-  let { VITE_MY_NAME, VITE_BEIAN_NO } = import.meta.env;
-
+  let VITE_MY_NAME = import.meta.env.VITE_MY_NAME as string;
   let VITE_MY_SITE = import.meta.env.VITE_MY_SITE as string;
+  let VITE_BEIAN_NO = import.meta.env.VITE_BEIAN_NO as string;
   let VITE_BEIAN_SITE = import.meta.env.VITE_BEIAN_SITE as string;
+
+  VITE_MY_NAME = decodeURIComponent(VITE_MY_NAME || '');
+  VITE_BEIAN_NO = decodeURIComponent(VITE_BEIAN_NO || '');
 
   let photoThumbUrl: string = '';
   let photoInfo: any = null;
