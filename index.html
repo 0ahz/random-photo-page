@@ -17,7 +17,7 @@
   </head>
   <body>
     <script type="module" src="/src/main.ts"></script>
-
+    <!--  -->
     <% if (VITE_GOOGLE_ANALYTICS_ID) { %>
     <script
       async
@@ -32,7 +32,9 @@
 
       gtag('config', '<%- VITE_GOOGLE_ANALYTICS_ID %>');
     </script>
-    <% } %> <% if (VITE_BEIAN_NO && VITE_BEIAN_SITE) { %>
+    <% } %>
+    <!--  -->
+    <% if (VITE_BEIAN_NO && VITE_BEIAN_SITE) { %>
     <a class="hide-block" href="<%- VITE_BEIAN_SITE %>"><%- VITE_BEIAN_NO %></a>
     <% } %>
   </body>

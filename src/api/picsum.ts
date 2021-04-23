@@ -36,7 +36,7 @@ export function queryPhotoInfo(url: string): Promise<PhotoInfo> {
   if (!matchs) {
     return Promise.reject('photo id not fount');
   }
-  return fetch(`https://picsum.photos/id/${matchs[1]}/info`).then((res) =>
+  return fetch(`${PICSUM_API_URL}/id/${matchs[1]}/info`).then((res) =>
     res.json()
   );
 }

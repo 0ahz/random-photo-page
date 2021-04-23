@@ -144,7 +144,7 @@
   .footer .item svg {
     width: 16px;
     height: 16px;
-    margin-right: 5px;
+    margin-right: 6px;
   }
 
   .footer .item + .item {
