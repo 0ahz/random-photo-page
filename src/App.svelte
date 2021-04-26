@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { queryRandomPhoto, queryPhotoInfo, PhotoInfo } from './api/picsum';
+  import { queryRandomPhoto, queryPhotoInfo } from './api/picsum';
 
   let {
     VITE_MY_NAME,
@@ -12,7 +12,7 @@
   VITE_BEIAN_NO = decodeURIComponent(VITE_BEIAN_NO || '');
 
   let photoThumbUrl: string = '';
-  let photoInfo: PhotoInfo = null;
+  let photoInfo = null;
 
   queryRandomPhoto()
     .then((photoUrl) => {
@@ -29,7 +29,7 @@
     <div class="bg-thumb" style="background-image: url({photoThumbUrl})" />
   {/if}
 
-  {#if photoInfo.download_url}
+  {#if photoInfo?.download_url}
     <div
       class="bg-photo"
       style="background-image: url({photoInfo.download_url})"
@@ -38,7 +38,7 @@
 
   <div class="footer">
     <div class="info">
-      {#if photoInfo.url}
+      {#if photoInfo?.url}
         <a class="item link" href={photoInfo.url} target="_blank">
           <svg version="1.1" viewBox="0 0 32 32" width="32" height="32">
             <path
