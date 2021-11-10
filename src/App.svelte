@@ -1,27 +1,50 @@
 <script lang="ts">
-  import { queryRandomPhoto, queryPhotoInfo } from './api/picsum';
+  import type { PhotoInfo } from "./api/base";
+
+  import { queryRandomPhotoThumbUrl, queryRandomPhoto } from "./api/picsum";
+  import { queryBingPhoto } from "./api/bing";
 
   let {
     VITE_MY_NAME,
     VITE_MY_SITE,
     VITE_BEIAN_NO,
     VITE_BEIAN_SITE,
+    VITE_APP_DEFAULT_PHOTO_PROVIDER,
   } = import.meta.env;
 
-  VITE_MY_NAME = decodeURIComponent(VITE_MY_NAME || '');
-  VITE_BEIAN_NO = decodeURIComponent(VITE_BEIAN_NO || '');
+  VITE_MY_NAME = decodeURIComponent(VITE_MY_NAME || "");
+  VITE_BEIAN_NO = decodeURIComponent(VITE_BEIAN_NO || "");
 
-  let photoThumbUrl: string = '';
-  let photoInfo = null;
+  // bing or random
+  let photoProvider = VITE_APP_DEFAULT_PHOTO_PROVIDER as string;
+  let photoThumbUrl: string = "";
+  let photoInfo: PhotoInfo = null;
 
-  queryRandomPhoto()
-    .then((photoUrl) => {
-      photoThumbUrl = photoUrl;
-      return queryPhotoInfo(photoUrl);
-    })
-    .then((info) => {
-      photoInfo = info;
-    });
+  photoProvider = ["bing", "random"].includes(photoProvider)
+    ? photoProvider
+    : "bing";
+
+  function init() {
+    switch (photoProvider) {
+      case "bing":
+        queryBingPhoto().then((info) => {
+          photoInfo = info;
+        });
+        break;
+      case "random":
+        queryRandomPhotoThumbUrl()
+          .then((photoUrl) => {
+            photoThumbUrl = photoUrl;
+            return queryRandomPhoto(photoUrl);
+          })
+          .then((info) => {
+            photoInfo = info;
+          });
+        break;
+    }
+  }
+
+  init();
 </script>
 
 <div class="app">
@@ -39,26 +62,42 @@
   <div class="footer">
     <div class="info">
       {#if photoInfo?.url}
-        <a class="item link" href={photoInfo.url} target="_blank">
-          <svg version="1.1" viewBox="0 0 32 32" width="32" height="32">
-            <path
-              d="M10 9V0h12v9H10zm12 5h10v18H0V14h10v9h12v-9z"
-              fill="#fff"
-            />
-          </svg>
-          <span>{photoInfo.author || ''}</span>
-        </a>
+        {#if photoProvider === "bing"}
+          <a
+            class="item link border-ani-link"
+            href="https://bing.com"
+            target="_blank"
+          >
+            <span>{photoInfo.title || ""}</span>
+            <span>{photoInfo.author || ""}</span>
+            <span>&nbsp;&rarr;&nbsp;Bing.com</span>
+          </a>
+        {:else if photoProvider === "random"}
+          <a
+            class="item link border-ani-link"
+            href={photoInfo.url}
+            target="_blank"
+          >
+            <svg version="1.1" viewBox="0 0 32 32" width="32" height="32">
+              <path
+                d="M10 9V0h12v9H10zm12 5h10v18H0V14h10v9h12v-9z"
+                fill="#fff"
+              />
+            </svg>
+            <span>{photoInfo.author || ""}</span>
+          </a>
+        {/if}
       {/if}
     </div>
 
     <div class="info">
       {#if VITE_BEIAN_NO && VITE_BEIAN_SITE}
-        <a class="item link" href={VITE_BEIAN_SITE}>
+        <a class="item link border-ani-link" href={VITE_BEIAN_SITE}>
           <span>{VITE_BEIAN_NO}</span>
         </a>
       {/if}
       {#if VITE_MY_NAME && VITE_MY_SITE}
-        <a class="item link" href={VITE_MY_SITE}>
+        <a class="item link border-ani-link" href={VITE_MY_SITE}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -113,25 +152,34 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    row-gap: 10px;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    height: 60px;
+    line-height: 24px;
+    padding: 20px;
     font-size: 14px;
     z-index: 9;
   }
 
   .footer .info {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    padding: 0 20px;
+    flex-wrap: wrap;
+    row-gap: 0px;
+    column-gap: 10px;
   }
 
-  .footer .item {
-    flex-shrink: 0;
+  .footer .info .item {
     display: flex;
+    flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
+    row-gap: 0px;
+    column-gap: 10px;
     color: #fff;
     text-decoration: none;
     text-shadow: 0 1px rgb(0 0 0 / 4%);
@@ -139,17 +187,36 @@
     transition: opacity 0.1s ease-in-out;
   }
 
-  .footer .item:hover {
+  .footer .info .item:hover {
     opacity: 1;
   }
 
-  .footer .item svg {
+  .footer .info .item svg {
     width: 16px;
     height: 16px;
-    margin-right: 6px;
   }
 
-  .footer .item + .item {
-    margin-left: 20px;
+  .border-ani-link {
+    padding-bottom: 1px;
+    color: white;
+    position: relative;
+  }
+
+  .border-ani-link::after {
+    content: "";
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    opacity: 0;
+    transform: translateY(3px);
+    background: white;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .border-ani-link:hover::after {
+    opacity: 1;
+    transform: translateY(0);
   }
 </style>
