@@ -5,9 +5,8 @@ export type PhotoQuery = {
 export type PhotoInfo = {
   id: string;
   url: string;
-  download_url?: string;
   title?: string;
-  author?: string;
+  copyright?: string;
   [k: string]: any;
 };
 

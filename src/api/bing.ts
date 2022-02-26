@@ -1,48 +1,17 @@
-import { corsFetch } from "./base";
 import type { PhotoQuery, PhotoInfo } from "./base";
+
+let { VITE_APP_BING_WALLPAPER_API } = import.meta.env;
 
 export async function queryBingPhoto(
   params: PhotoQuery = {}
 ): Promise<PhotoInfo> {
   const cacheData = getCacheData();
   if (cacheData) return cacheData;
-  const baseUrl = "https://cn.bing.com";
-  const query: PhotoQuery = {
-    format: "js",
-    idx: 0,
-    n: 1,
-    uhd: 1,
-    uhdwidth: 3840,
-    uhdheight: 2160,
-    ...params,
-  };
-  const querystring = Object.keys(query)
-    .map((k) => `${k}=${query[k]}`)
-    .join("&");
-  const reqUrl = `${baseUrl}/HPImageArchive.aspx?${querystring}`;
-  const result = await corsFetch(reqUrl).then((res) => res.json());
-  if (!result?.images?.length) return null;
-  const image = result.images[0];
-  const url = `${baseUrl}${image.url}`;
-  let title = "",
-    author = "";
-  const arr = image.copyright?.match(/^(.*)[（\(](.*)[）\)]$/);
-  if (arr) {
-    title = arr[1];
-    author = arr[2];
-  } else {
-    title = image.title;
-    author = image.copyright;
-  }
-  const data = {
-    id: image.hsh,
-    title,
-    author,
-    url,
-    download_url: url,
-  };
-  setCacheData(data);
-  return data;
+  const result = await fetch(VITE_APP_BING_WALLPAPER_API).then((res) =>
+    res.json()
+  );
+  setCacheData(result);
+  return result;
 }
 
 function setCacheData(data: PhotoInfo): void {

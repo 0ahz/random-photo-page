@@ -1,6 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
-import html from "vite-plugin-html";
+import { createHtmlPlugin } from "vite-plugin-html";
 
 export default ({ mode }) => {
   const env = loadEnv(mode, process.cwd());
@@ -10,9 +10,12 @@ export default ({ mode }) => {
   });
 
   return defineConfig({
+    server: {
+      port: 3001,
+    },
     plugins: [
       svelte(),
-      html({
+      createHtmlPlugin({
         inject: {
           injectData: { ...env },
         },

@@ -16,7 +16,7 @@
   VITE_BEIAN_NO = decodeURIComponent(VITE_BEIAN_NO || "");
 
   // bing or random
-  let photoProvider = VITE_APP_DEFAULT_PHOTO_PROVIDER as string;
+  let photoProvider = VITE_APP_DEFAULT_PHOTO_PROVIDER;
   let photoThumbUrl: string = "";
   let photoInfo: PhotoInfo = null;
 
@@ -57,6 +57,8 @@
       class="bg-photo"
       style="background-image: url({photoInfo.download_url})"
     />
+  {:else if photoInfo?.url}
+    <div class="bg-photo" style="background-image: url({photoInfo.url})" />
   {/if}
 
   <div class="footer">
@@ -69,7 +71,7 @@
             target="_blank"
           >
             <span>{photoInfo.title || ""}</span>
-            <span>{photoInfo.author || ""}</span>
+            <span>{photoInfo.copyright || ""}</span>
             <span>&nbsp;&rarr;&nbsp;Bing.com</span>
           </a>
         {:else if photoProvider === "random"}
